@@ -7,7 +7,7 @@ This skeleton application was built for Composer. This makes setting up a new Sl
 ## First Access in this repository ------- Mario Ferreira
 	install composer utilizing the installation manual for your operating system;
 	clone this repository into your computer;
-	Use php composer.phar install to get all dependencies;
+	Use "php composer.phar install" to get all dependencies;
 	use "php -S localhost:8080 -t public" or "php composer.phar start" to run this project;
 
 ## Install the Application (create a new SlimProject)
