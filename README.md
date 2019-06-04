@@ -4,7 +4,13 @@ Use this skeleton application to quickly setup and start working on a new Slim F
 
 This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
 
-## Install the Application
+## First Access in this repository ------- Mario Ferreira
+	install composer utilizing the installation manual for your operating system;
+	clone this repository into your computer;
+	Use php composer.phar install to get all dependencies;
+	use "php -S localhost:8080 -t public" or "php composer.phar start" to run this project;
+
+## Install the Application (create a new SlimProject)
 
 Run this command from the directory in which you want to install your new Slim Framework application.
 
