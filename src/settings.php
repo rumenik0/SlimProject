@@ -18,9 +18,9 @@ return [
 
         // Database settings
         'db' => [
-            'host' => 'localhost',
+            'host' => '127.0.0.1',
             'user' => 'root',
-            'pass' => 'root',
+            'pass' => 'root1234',
             'dbname' => 'lanchonete'
         ],
     ],

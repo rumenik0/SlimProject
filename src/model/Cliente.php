@@ -6,19 +6,26 @@ use Slim\Http\Response;
 
 return function($app, $container){
 
-    $app->post('/cliente/{id}', function(Request $request, Response $response, array $args) use ($container){
+    $app->post('/cliente/', function(Request $request, Response $response, array $args) use ($container){
         $body = $request->getParsedBody();
         $connection = $this->db;
         $data = null;
+
+        $nome = $body['nome'];
+        $telefone = $body['telefone'];
+        $cep = $body['cep'];
+        $rua = $body['rua'];
+        $numero = $body['numero'];
+        $referencia = $body['referencia'];
         
         $stmt = $connection->prepare('INSERT INTO  cliente(nome, telefone, cep, rua, numero, referencia) VALUES (:nome, :telefone, :cep, :rua, :numero, :referencia)');
         $stmt->execute(array(
-                ':nome' => $body["nome"],
-                ':telefone' => $body["telefone"],
-                ':cep' => $body["cep"],
-                ':rua' => $body["rua"],
-                ':numero' => $body["numero"],
-                ':referencia' => $body["referencia"])
+                ':nome' => $nome,
+                ':telefone' => $telefone,
+                ':cep' => $cep,
+                ':rua' => $rua,
+                ':numero' => $numero,
+                ':referencia' => $referencia)
         );
         $data = $stmt->rowCount();
 
