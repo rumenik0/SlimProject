@@ -1,5 +1,5 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -28,8 +28,8 @@ return function($app, $container){
                 ':referencia' => $referencia)
         );
         $data = $stmt->rowCount();
-
-        return $response->withJson($data)
+        $lastId = $connection->lastInsertId();
+        return $response->withJson($lastId)
                         ->withStatus(200);
     });
 
@@ -41,6 +41,15 @@ return function($app, $container){
         $connection = $this->db;
         $stmt = $connection->query("SELECT * FROM cliente;");
 
+        $data = $stmt->fetchAll();
+
+        return $response->withJson($data)
+            ->withStatus(200);
+    });
+
+    $app->get('/login/', function (Request $request, Response $response, array $args) use ($container) {
+        $connection = $this->db;
+        $stmt = $connection->query("SELECT * FROM auth;");
         $data = $stmt->fetchAll();
 
         return $response->withJson($data)
@@ -131,6 +140,29 @@ return function($app, $container){
         );
         $data = $stmt->rowCount();
 
+        return $response->withJson($data)
+                        ->withStatus(200)
+                        ->withHeader('Access-Control-Allow-Origin', 'http://mysite')
+                        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+                        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    });
+
+    $app->post('/auth', function(Request $request, Response $response, array $args) use ($container){
+        $body = $request->getParsedBody();
+        $connection = $this->db;
+        $data = null;
+
+        $user = $body['user'];
+        $pass = $body['pass'];
+
+        $stmt = $connection->prepare('SELECT id FROM auth 
+                                     WHERE username = :user AND password = :pass;');
+        $stmt->execute(array(
+            ':user' => $user,
+            ':pass' => $pass)
+        );
+        
+        $data = $stmt->fetchAll();
         return $response->withJson($data)
                         ->withStatus(200);
     });
