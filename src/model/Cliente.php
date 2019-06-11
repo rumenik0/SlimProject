@@ -47,25 +47,23 @@ return function($app, $container){
             ->withStatus(200);
     });
 
-    $app->get('/JASON/{nome}/{idade}', function (Request $request, Response $response, array $args) use ($container) {
+    $app->get('/cliente/nextid', function (Request $request, Response $response, array $args) use ($container) {
         // Sample log message
-        $data = array('var' => $args['nome'], 'var2' => $args['idade']);
-        $container->get('logger')->info($data);
-        #return $response->withRedirect('/new-url', 301);
+        $container->get('logger')->info("Pessoas App: [POST] pessoas/. Received Data: " . json_encode($args));
 
-        $newResponse = $response->withJson($data);
+        //$body = $request->getParsedBody();
+        $connection = $this->db;
+        //$data = null;
+        $stmt = $connection->query('SELECT AUTO_INCREMENT id
+                                      FROM information_schema.TABLES 
+                                     WHERE TABLE_SCHEMA=\'lanchonete\' AND 
+                                           TABLE_NAME=\'cliente\';');
+        $data = $stmt->fetchAll();
 
-        return $newResponse->withHeader('Access-Control-Allow-Origin', 'http://localhost:4200')
-                          ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-                           ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        return $response->withJson($data)
+                        ->withStatus(200);
     });
 
-    $app->get('/', function(Request $request, Response $response, array $args) use ($container){
-        return phpinfo();
-    });
-	
-	
-	
 	$app->post('/cliente/update/', function(Request $request, Response $response, array $args) use ($container){
         $body = $request->getParsedBody();
         $connection = $this->db;
@@ -113,6 +111,31 @@ return function($app, $container){
         return $response->withJson($data)
                         ->withStatus(200);
     });
+
+    $app->post('/login/', function(Request $request, Response $response, array $args) use ($container){
+        $body = $request->getParsedBody();
+        $connection = $this->db;
+        $data = null;
+
+        $id   = $body['id'];
+        $user = $body['username'];
+        $pass = $body['password'];
+        $tipo = $body['type'];
+        
+        $stmt = $connection->prepare('INSERT INTO  auth(id, username, password, type) VALUES (:id, :user, :pass, :tipo)');
+        $stmt->execute(array(
+                ':id' => $id,
+                ':user' => $user,
+                ':pass' => $pass,
+                ':tipo' => $tipo)
+        );
+        $data = $stmt->rowCount();
+
+        return $response->withJson($data)
+                        ->withStatus(200);
+    });
+
+
 	
 	
 	
@@ -197,28 +220,5 @@ return function($app, $container){
         return $response->withJson($data)
                         ->withStatus(200);
     });
-    
-    /* $app->get('/', function ( Request $request, Response $response, array $args ) use ($container){
-        return phpinfo{};
-    });*/
-
-    $app->post('/cliente/nextid', function (Request $request, Response $response, array $args) use ($container) {
-        // Sample log message
-        $container->get('logger')->info("Pessoas App: [POST] pessoas/. Received Data: " . json_encode($args));
-
-        $body = $request->getParsedBody();
-        $connection = $this->db;
-        $data = null;
-        $stmt = $connection->query('SELECT AUTO_INCREMENT id
-                                      FROM information_schema.TABLES 
-                                     WHERE TABLE_SCHEMA=\'lanchonete\' AND 
-                                           TABLE_NAME=\'cliente\';');
-        $data = $stmt->fetchAll();
-
-        return $response->withJson($data)
-                        ->withStatus(200);
-    });
-        
-    
 
 };

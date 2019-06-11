@@ -21,7 +21,7 @@ return function (App $app) {
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     });
 
-    $clientCRUD = require __DIR__ . '/../src/model/Cliente.php'; // Pessoa Entity
+    $clientCRUD = require __DIR__ . '/../src/model/Cliente.php';
     $clientCRUD($app, $container);
 
     $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function ($req, $res) {
