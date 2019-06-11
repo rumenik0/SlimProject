@@ -67,6 +67,23 @@ return function($app, $container){
     /* $app->get('/', function ( Request $request, Response $response, array $args ) use ($container){
         return phpinfo{};
     });*/
+
+    $app->post('/cliente/nextid', function (Request $request, Response $response, array $args) use ($container) {
+        // Sample log message
+        $container->get('logger')->info("Pessoas App: [POST] pessoas/. Received Data: " . json_encode($args));
+
+        $body = $request->getParsedBody();
+        $connection = $this->db;
+        $data = null;
+        $stmt = $connection->query('SELECT AUTO_INCREMENT id
+                                      FROM information_schema.TABLES 
+                                     WHERE TABLE_SCHEMA=\'lanchonete\' AND 
+                                           TABLE_NAME=\'cliente\';');
+        $data = $stmt->fetchAll();
+
+        return $response->withJson($data)
+                        ->withStatus(200);
+    });
         
     
 
